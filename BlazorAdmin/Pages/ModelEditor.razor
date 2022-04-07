@@ -2,9 +2,7 @@
 @page "/{EndpointBase}/{SetName}/{ModelId}"
 @attribute [AdminAuthorize]
 @using Annotations;
-@using Utils;
-@using Components;
-
+@using BlazorAdmin.Components;
 
 @{
 
@@ -16,7 +14,7 @@
         <CascadingValue Value=@Model>
         @if(customForm is not null)
         {
-            @Components.RenderCustomForm(customForm.componentType, isNewInstance, Error);
+            @Utils.Components.RenderCustomForm(customForm.componentType, isNewInstance, Error);
         }
         else
         {

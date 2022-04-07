@@ -1,6 +1,6 @@
 ﻿@page "/{EndpointBase}/{SetName}"
 @attribute [AdminAuthorize]
-
+@using BlazorAdmin.Components;
 <ConfirmPopup 
     Message = "Permanently delete the entity from database?"
     OnConfirm="(async (e)=> await DeleteAsync())"
