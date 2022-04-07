@@ -1,0 +1,101 @@
+﻿@using System.Reflection;
+@using Utils;
+@inherits GenericInputBase
+@{
+    if(Model?.Model is not null && Property is not null) {
+
+        var propType = Property.PropertyType;
+        var readOnly = Property.CanWrite?false:true;
+        var curVal = Property.GetValue(Model.Model);
+        if(curVal is not null)
+        {
+            if(propType.IsAssignableFrom(typeof(DateTime)))
+            {
+                curVal = ((DateTime)curVal).ToString("yyyy-MM-ddThh:mm:ss.fff");
+            }
+            else if(propType.IsAssignableFrom(typeof(DateTimeOffset)))
+            {
+                curVal = ((DateTimeOffset)curVal).LocalDateTime.ToString("yyyy-MM-ddThh:mm:ss.fff");
+            }
+        }
+        if(InputMap.ContainsKey(propType))
+        {
+            var attributes = InputMap[propType];
+            bool disabled = false;
+            if(attributes.Values.Contains("checkbox") && readOnly)
+            {
+                //Console.WriteLine(attributes["disabled"]);
+                disabled = true;
+            }
+            <input @attributes=attributes id="@Property.Name" class="@Class" value="@curVal" @onchange="@(e=>{
+                SetProperty(e.Value);
+                })"  readonly=@readOnly disabled=@disabled/>
+        }
+        //byte[] treated as files
+        else if (propType.IsAssignableFrom(typeof(byte[])))
+        {
+            if(curVal is null)
+            {
+                <p>No file</p>
+            }
+            else
+            {
+                <p>Current file Size: @curVal.Property("Length") bytes</p>
+            }
+
+            <InputFile class="@Class" id="@Property.Name" OnChange="OnFileUploaded"/>
+        }
+        else if(EntitySet is not null)
+        {
+            bool multiple = false;
+            if (propType.IsEnumerable())
+                multiple = true;
+            <select class="@Class" @onchange="@(e=>{
+                SetPropertyFromEntitySet(e.Value);
+                })" readonly=@readOnly multiple=@multiple>
+
+                @if(!multiple)
+                {
+                    <option value="-1">-- Select --</option>
+                }
+                
+                
+                @for(int i = 0; i<EntitySet.Count;i++)
+                {
+                    var obj = EntitySet[i];
+                    bool selected = false;
+                    
+                    if (curVal == obj)
+                        selected = true;
+                    else if (multiple)
+                    {
+                        var containsMethod = Property.PropertyType.GetMethod("Contains");
+                        if (containsMethod is null)
+                        {
+                            Error = $"Property {Property.Name} of type {Property.PropertyType} does not have Contains method. Property should implement ICollection<>.";
+                            continue;
+                        }
+                        bool contains = bool.Parse(containsMethod.Invoke(curVal, new object[] {obj}).ToString());
+                        if (contains)
+                            selected = true;
+                    }
+                    Console.WriteLine(propType +" " + i);
+                    <option value="@i" selected="@selected">@obj</option>
+                }
+                
+            </select>
+        }
+        else
+        {
+            <p>Input map has no definition for @propType.ToString() and EntitySet is not specified.</p>
+        }
+
+}
+else {
+        <p>Model is not found</p>
+    }
+    if(Error is not null)
+    {
+        <p>@Error</p>
+    }
+}

@@ -1,0 +1,55 @@
+﻿@using Utils;
+@inherits FormBase;
+@{
+    <ConfirmPopup 
+    Message = "Permanently delete entity from database?"
+    OnConfirm="(async (e)=> await DeleteAsync())"
+    ConfirmButtonClass="admin-btn-size model-edit-form-submit border-0 rounded bg-danger text-light"
+    ConfirmButtonText = "Delete"
+    IsShown=@showDeleteConfirm
+    />
+    string title = Model.GetType().Name;
+            if(IsNewInstance)
+            {
+                title = title.Insert(0, "New ");
+            }
+            <h3>@title</h3>
+            <div>
+                <EditForm class="model-edit-form" Model=@Model OnValidSubmit="@HandleValidAsync">
+                <DataAnnotationsValidator/>
+                <div class="model-edit-form-msg"><ValidationSummary/></div>
+                    @foreach (var p in Props)
+                    {
+                           
+                        var set = SubSets.ContainsKey(p)?SubSets[p]:null;
+                        AdminInput customInput = p.GetCustomAttributes(typeof(AdminInput), false).FirstOrDefault() as AdminInput;
+                        if(customInput is not null)
+                        {
+                            if(customInput.componentType.IsSubclassOf(typeof(GenericInputBase)))
+                            {
+                                Components.RenderSimple(customInput.componentType);
+                            }
+                            else
+                            {
+                                <p>Custom input @customInput.componentType must derive from GenericInputBase. Unable to show the input.</p>
+                            }
+                        } 
+                        else
+                        {
+                            <label for=@p.Name>@p.Name</label>
+                            <GenericInput Class="edit-form-input" Property="@p" EntitySet="@set"/>
+                        }
+                    
+                    }
+                <div class="d-inline-flex justify-content-around">
+                    <input type = "submit" class="admin-btn-size model-edit-form-submit border-0 rounded bg-primary text-light", value="Save"/>
+                    @if(!IsNewInstance)
+                    {
+                        <input type = "button" class="admin-btn-size model-edit-form-submit border-0 rounded bg-danger text-light" value="Delete" @onclick="OnDeleteClick"/>
+                    }
+                    <input type = "button" class="admin-btn-size model-edit-form-submit border-0 rounded bg-warning text-light" value="Cancel" @onclick="OnCancelClick"/>
+                </div>     
+                </EditForm>
+                <p>@Error</p>
+             </div>
+}

@@ -1,0 +1,39 @@
+﻿
+@if (IsShown)
+{
+<div class="confirm-popup-container">
+    <div class="confirm-popup rounded">
+        <h5>@Message</h5>
+        <div class = "confirm-popup-buttons-container">
+            <input style="@ConfirmButtonStyle" type = "button" class="@ConfirmButtonClass" value="@ConfirmButtonText" @onclick="(e=>{IsShown=false; OnConfirm?.Invoke(e);})"/>
+            <input style="@CancelButtonStyle" type = "button" class="@CancelButtonClass" value="@CancelButtonText" @onclick="(e=>{IsShown=false; OnCancel?.Invoke(e);})"/>
+        </div>
+    </div>
+</div>    
+}
+
+
+
+@code {
+    [Parameter]
+    public Action<MouseEventArgs> OnConfirm { get; set; }
+    [Parameter]
+    public Action<MouseEventArgs> OnCancel { get; set; }
+    [Parameter]
+    public string Message { get; set; }
+    [Parameter]
+    public string ConfirmButtonStyle { get; set; }
+    [Parameter]
+    public string CancelButtonStyle { get; set; }
+    [Parameter]
+    public string ConfirmButtonClass { get; set; } = "admin-btn-size model-edit-form-submit border-0 rounded bg-primary text-light";
+    [Parameter]
+    public string CancelButtonClass { get; set; } = "admin-btn-size model-edit-form-submit border-0 rounded bg-warning text-light";
+    [Parameter]
+    public string CancelButtonText { get; set; } = "Cancel";
+    [Parameter]
+    public string ConfirmButtonText { get; set; } = "Confirm";
+    [Parameter]
+    public bool IsShown { get; set; }
+    
+}

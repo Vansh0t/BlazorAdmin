@@ -1,0 +1,42 @@
+﻿@page "/{EndpointBase}"
+@attribute [AdminAuthorize]
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Set
+            </th>
+            <th>
+                Entities Counts
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@if(sets is not null)
+        {
+            @foreach (var s in sets) {
+     string nav = "admin/" + @s.name;
+        <tr>
+            <td>
+                <NavLink href=@nav>
+                    @s.name
+                </NavLink>
+            </td>
+             
+            <td>
+                @s.count
+            </td>
+            <td >
+                <div class = "admin-btn-size">
+                    <NavLink  href=@(nav+"/new")>
+                        <button  class="border-0 rounded bg-primary text-light d-flex justify-content-evenly align-content-center w-100"><span class="oi oi-plus top-0 my-auto"/>New</button>
+                    </NavLink>
+                </div>
+            </td>
+        </tr>
+}
+        }
+        
+    </tbody>
+</table>

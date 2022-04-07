@@ -1,0 +1,31 @@
+﻿@page "/{EndpointBase}/{SetName}/new"
+@page "/{EndpointBase}/{SetName}/{ModelId}"
+@attribute [AdminAuthorize]
+@using Annotations;
+@using Utils;
+@using Components;
+
+
+@{
+
+
+    if (isModelInitialized)
+    {
+        
+        AdminForm customForm = Model.GetType().GetCustomAttributes(typeof(AdminForm), false).FirstOrDefault() as AdminForm;
+        <CascadingValue Value=@Model>
+        @if(customForm is not null)
+        {
+            @Components.RenderCustomForm(customForm.componentType, isNewInstance, Error);
+        }
+        else
+        {
+            <GenericForm Error=@Error Props=@props SubSets=@subSets SetName=@SetName IsNewInstance=@isNewInstance/>
+        }
+        </CascadingValue>
+    }
+    
+}
+
+
+

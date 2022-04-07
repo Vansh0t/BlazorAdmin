@@ -1,0 +1,79 @@
+﻿#container {
+    display: flex;
+    flex-direction: row;
+    flex: 1;
+}
+
+
+.model-edit-form {
+    display: flex;
+    flex-direction: column;
+    align-content: start;
+    min-width: 200px;
+    max-width: 400px;
+    width: 100%;
+}
+
+.edit-form-input {
+    display: inline-flex;
+    justify-content: start;
+    margin-bottom: 10px;
+    border-radius: 4px;
+    border-width: 1px;
+}
+
+input.edit-form-input:read-only {
+    background-color: lightgray
+}
+
+.InputCheckbox {
+    min-width: min-content;
+}
+
+.model-edit-form-msg {
+    align-self: center;
+}
+
+.model-edit-form-submit {
+    margin-top: 10px;
+}
+
+.admin-btn-size {
+    width: 100px;
+}
+
+.confirm-popup-container {
+    background-color: rgb(44, 44, 44, 0.70);
+    width: 100vw;
+    height: 100vh;
+    z-index: 9999;
+    position: absolute;
+    top: 0;
+    right: 0;
+    display: flex;
+    justify-content: center;
+}
+
+.confirm-popup {
+    width: 25%;
+    min-width: 300px;
+    position: fixed;
+    background-color: whitesmoke;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 24px;
+}
+
+    .confirm-popup h5 {
+        text-align: center;
+    }
+
+.confirm-popup-buttons-container {
+    width: 100%;
+    display: flex;
+    justify-content: space-evenly;
+}

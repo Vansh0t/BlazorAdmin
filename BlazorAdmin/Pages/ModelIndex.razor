@@ -1,0 +1,75 @@
+﻿@page "/{EndpointBase}/{SetName}"
+@attribute [AdminAuthorize]
+
+<ConfirmPopup 
+    Message = "Permanently delete the entity from database?"
+    OnConfirm="(async (e)=> await DeleteAsync())"
+    ConfirmButtonClass="admin-btn-size model-edit-form-submit border-0 rounded bg-danger text-light"
+    ConfirmButtonText = "Delete"
+    IsShown=@ShowDeleteConfirm
+    />
+<div class="d-flex align-content-center">
+    <h4>@SetName</h4>
+<NavLink class="ms-3" href=@($"/admin/{SetName}/new")>
+     <button class="admin-btn-size border-0 rounded bg-primary text-light d-flex justify-content-evenly align-content-center"><span class="oi oi-plus top-0 my-auto"/>New</button>
+</NavLink>
+</div>
+
+
+<p>@Error</p>
+
+<table class="table">
+    <thead>
+
+        <tr>
+@foreach (var p in modelProps) {
+                if(p.isVisible)
+                {
+                    <th id="@p.name">
+                        <p>
+                            @(p.displayName is not null?p.displayName:p.name)
+                        </p>
+                    </th>
+                }
+}            
+                    <th id="model-index-actions">
+
+                    </th>
+                
+        </tr>
+
+    </thead>
+    <tbody>
+@foreach (var r in rows) {
+    string link = $"/admin/{SetName}/{r.pkeyValue}";
+     <tr>
+    @foreach(var kvp in r.data) {
+            var prop = modelProps.FirstOrDefault(_=>_.name==kvp.Key);
+
+            @if(prop is not null) {
+                        if(prop.isVisible)
+                        {
+                            if(link is not null)
+                            {
+                                <td headers=@kvp.Key>
+                                    <NavLink href=@link>@kvp.Value</NavLink>
+                                </td>
+                                link = null;
+                            }
+                            else
+                            {
+                                <td headers=@kvp.Key>
+                                    @kvp.Value
+                                </td>
+                            }
+                        }
+                        
+            }
+        }
+        <td headers="model-index-actions">
+              <input type = "button" class="admin-btn-size model-edit-form-submit border-0 rounded bg-danger text-light" value="Delete" @onclick="(e=>{ShowDeleteConfirm = true; targetEntity=r.entity;})"/>
+        </td>
+    </tr>
+}
+    </tbody>
+</table>
