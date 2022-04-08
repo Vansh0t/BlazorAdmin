@@ -1,6 +1,8 @@
 # BlazorAdmin
-BlazorAdmin is an RCL (Razor Class Library) with pages and components for database create, read, update, delete operations. The main goal of the project is to support CRUD operations for generic models. This means a user doesn't have to use CRUD scaffolding or manually process each individual model, but instead can simple add one attribute [AdminVisible] to a model and be able to execute all CRUD operations.
-## Installation
+<img style="width:35%; height:35%;" src="https://user-images.githubusercontent.com/35566242/162442880-f064506c-7300-4334-8874-3f9645694825.png" />
+
+BlazorAdmin is an RCL (Razor Class Library) with pages and components for database create, read, update, delete operations. The main goal of the project is to support CRUD operations for generic models. This means a user doesn't have to use CRUD scaffolding or manually process each individual model, but instead can simple add one attribute ``[AdminVisible]`` to a model and be able to execute all CRUD operations.
+## Setup
 1. Add nuget to the project
 2. Add BlazorAdmin service. The first parameter defines endpoint for admin services, the second one defines comma delimited roles that user should have to be authorized. Defaults to Admin.
 ```C#
