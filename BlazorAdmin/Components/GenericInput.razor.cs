@@ -1,12 +1,9 @@
-﻿using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Forms;
+﻿using Microsoft.AspNetCore.Components.Forms;
 namespace BlazorAdmin.Components
 {
     using Utils;
     partial class GenericInput:GenericInputBase
     {
-        [Inject]
-        protected NavigationManager _nav { get; set; }
         private const int MAX_FILE_SIZE = 10485760; //~10mb 
         private readonly Dictionary<Type, Dictionary<string, object>> InputMap = new()
         {
@@ -71,8 +68,6 @@ namespace BlazorAdmin.Components
                 byte[] bytes = ms.ToArray();
                 SetProperty(bytes);
             }
-
-            //testEntityInstance.File = 
         }
         private void SetProperty(object value)
         {

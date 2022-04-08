@@ -1,6 +1,5 @@
 ﻿using System.Reflection;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace BlazorAdmin
@@ -18,26 +17,6 @@ namespace BlazorAdmin
             return obj is null ? null : obj.ToString();
         }
         /// <summary>
-        /// Converts array of properties to Dictionary, where keys are property names and values property values of given object
-        /// </summary>
-        /// <param name="props"></param>
-        /// <param name="obj"></param>
-        /// <returns></returns>
-        internal static Dictionary<string, object> ToDict(this PropertyInfo[] props, object obj)
-        {
-            Dictionary<string, object> result = new();
-            foreach(var p in props)
-            {
-                
-                var val = p.GetValue(obj);
-                //Console.WriteLine(val.Is()?val.GetType():"Null");
-                Console.WriteLine(p.PropertyType);
-                var name = p.Name;
-                result.Add(name, val);
-            }
-            return result;
-        }
-        /// <summary>
         /// Converts array of properties to Dictionary, where keys are property names and values property values of given object.
         /// All values are converted to string via .ToString()
         /// </summary>
@@ -52,25 +31,6 @@ namespace BlazorAdmin
                 var val = p.GetValue(obj);
                 var name = p.Name;
                 result.Add(name, val.ToStringOrNull());
-            }
-            return result;
-        }
-        /// <summary>
-        /// Converts array of properties to Dictionary with property type.
-        /// All values are converted to string via .ToString()
-        /// </summary>
-        /// <param name="props"></param>
-        /// <param name="obj"></param>
-        /// <returns>Dictionary with property name as key and object[] where object[0]=value, object[1]=type</returns>
-        internal static Dictionary<string, object[]> ToTypeDict(this PropertyInfo[] props, object obj)
-        {
-            Dictionary<string, object[]> result = new();
-            
-            foreach (var p in props)
-            {
-                var val = p.GetValue(obj);
-                var name = p.Name;
-                result.Add(name, new object[2] { val.ToStringOrNull(), p.PropertyType});
             }
             return result;
         }
@@ -108,10 +68,6 @@ namespace BlazorAdmin
         {
             return obj.GetType().GetProperty(propName)?.GetValue(obj);
         }
-        internal static string GetEntityName(this IReadOnlyList<IProperty> entityProps)
-        {
-            return entityProps.Select(_ => _.Name).SingleOrDefault();
-        }
         internal static bool IsEnumerable(this Type type, bool ignoreString = true)
         {
             var isEnumerable = typeof(System.Collections.IEnumerable).IsAssignableFrom(type);
@@ -148,8 +104,18 @@ namespace BlazorAdmin
         {
             return type.GetCustomAttribute(typeof(AdminVisible)) as AdminVisible;
         }
+        /// <summary>
+        /// Initializes BlazorAdmin Service.
+        /// </summary>
+        /// <param name="services"></param>
+        /// <param name="adminEndpoint">One word endpoint for BlazorAdmin services. For example 'admin' will result in http://localhost/admin </param>
+        /// <param name="roles"></param>
+        /// <returns></returns>
+        /// <exception cref="FormatException"></exception>
         public static IServiceCollection AddBlazorAdmin(this IServiceCollection services, string adminEndpoint, string roles = "Admin")
         {
+            if (adminEndpoint.Contains('/'))
+                throw new FormatException("Due to Blazor's @page limitations admin endpoint cannot contain route delimiters '/'. It must be a single word like 'admin'");
             var adminService = new Services.BlazorAdminService(adminEndpoint, roles);
             services.AddSingleton(adminService);
             return services;

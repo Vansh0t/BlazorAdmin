@@ -24,7 +24,6 @@
             bool disabled = false;
             if(attributes.Values.Contains("checkbox") && readOnly)
             {
-                //Console.WriteLine(attributes["disabled"]);
                 disabled = true;
             }
             <input @attributes=attributes id="@Property.Name" class="@Class" value="@curVal" @onchange="@(e=>{
@@ -79,7 +78,6 @@
                         if (contains)
                             selected = true;
                     }
-                    Console.WriteLine(propType +" " + i);
                     <option value="@i" selected="@selected">@obj</option>
                 }
                 

@@ -7,7 +7,7 @@ namespace BlazorAdmin.Pages
     public partial class ModelIndex:ComponentBase
     {
         [Inject]
-        protected DbContext Ctx { get; set; }
+        protected DbContext _ctx { get; set; }
         [Parameter]
         public string SetName { get; set; }
         [Parameter]
@@ -49,7 +49,7 @@ namespace BlazorAdmin.Pages
 
         protected async override Task OnInitializedAsync()
         {
-            await InitDbDataAsync(SetName, Ctx);
+            await InitDbDataAsync(SetName, _ctx);
         }
         public async Task InitDbDataAsync(string setName, DbContext ctx)
         {
@@ -122,8 +122,8 @@ namespace BlazorAdmin.Pages
         }
         private async Task DeleteAsync()
         {
-            Ctx.Remove(targetEntity);
-            await Ctx.SaveChangesAsync();
+            _ctx.Remove(targetEntity);
+            await _ctx.SaveChangesAsync();
             rows.Remove(rows.First(_ => _.entity == targetEntity));
             targetEntity = null;
             ShowDeleteConfirm = false;

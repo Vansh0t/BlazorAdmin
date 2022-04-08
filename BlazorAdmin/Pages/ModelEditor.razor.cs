@@ -12,9 +12,7 @@ namespace BlazorAdmin.Pages
         [Parameter]
         public string ModelId { get; set; }
         [Inject]
-        protected DbContext Ctx { get; set; }
-        [Inject]
-        protected NavigationManager NavigationManager { get; set; }
+        protected DbContext _ctx { get; set; }
         public object Model { get; set; }
 
         private Dictionary<PropertyInfo, List<object>> subSets = new();
@@ -47,11 +45,11 @@ namespace BlazorAdmin.Pages
         public string Error { get; set; } = "";
         protected async override Task OnInitializedAsync()
         {
-            dbSet = Database.GetSetQueryable(Ctx, SetName);
+            dbSet = Database.GetSetQueryable(_ctx, SetName);
             var query = dbSet as IQueryable<object>;
             if (dbSet is null)
             {
-                Error = $"No DbSet found in {Ctx.GetType()} with name {SetName}.";
+                Error = $"No DbSet found in {_ctx.GetType()} with name {SetName}.";
                 return;
             }
             
@@ -63,7 +61,7 @@ namespace BlazorAdmin.Pages
             }
             if (ModelId is not null)
             {
-                Model = await Database.GetEntityByIdAsync(Ctx, modelType, ModelId);
+                Model = await Database.GetEntityByIdAsync(_ctx, modelType, ModelId);
             }
             else
             {
@@ -89,7 +87,7 @@ namespace BlazorAdmin.Pages
         private async Task InitModelAsync()
         {
             props = Model.GetType().GetProperties();
-            subSets = await Database.GetNavigationSetsAsync(Ctx, modelType);
+            subSets = await Database.GetNavigationSetsAsync(_ctx, modelType);
             isModelInitialized = true;
         }
         

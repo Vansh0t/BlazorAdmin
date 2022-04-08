@@ -68,9 +68,9 @@ input.edit-form-input:read-only {
     padding: 24px;
 }
 
-    .confirm-popup h5 {
-        text-align: center;
-    }
+.confirm-popup h5 {
+    text-align: center;
+}
 
 .confirm-popup-buttons-container {
     width: 100%;

@@ -1,7 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
 using System.Reflection;
-using System.Linq;
 namespace BlazorAdmin.Utils
 {
     public class Database
@@ -89,7 +87,6 @@ namespace BlazorAdmin.Utils
                 var set = GetSetQueryable(context, n.TargetEntityType.ClrType);
                 if (set is not null)
                     sets.Add(props.First(_ => _.Name == n.Name), await set.ToListAsync());
-
             }
             return sets;
         }

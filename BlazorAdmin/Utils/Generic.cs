@@ -6,7 +6,6 @@ namespace BlazorAdmin.Utils
         public static void SetProperty(object obj, PropertyInfo prop, object value)
         {
             var trueType = StripNullable(prop.PropertyType);
-            Console.WriteLine(value.ToString());
             //Try simple convert
             try
             {

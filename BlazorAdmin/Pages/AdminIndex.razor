@@ -16,7 +16,7 @@
 @if(sets is not null)
         {
             @foreach (var s in sets) {
-     string nav = "admin/" + @s.name;
+     string nav = $"{EndpointBase}/{s.name}";
         <tr>
             <td>
                 <NavLink href=@nav>

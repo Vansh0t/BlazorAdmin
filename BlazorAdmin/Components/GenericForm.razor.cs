@@ -9,9 +9,9 @@ namespace BlazorAdmin.Components
     partial class GenericForm:FormBase
     {
         [Inject]
-        protected DbContext Ctx { get; set; }
+        protected DbContext _ctx { get; set; }
         [Inject]
-        protected NavigationManager NavigationManager { get; set; }
+        protected NavigationManager _nMgr { get; set; }
         [Parameter]
         public PropertyInfo[] Props { get; set; }
         [Parameter]
@@ -24,25 +24,25 @@ namespace BlazorAdmin.Components
         {
             if (IsNewInstance)
             {
-                await Ctx.AddAsync(Model);
+                await _ctx.AddAsync(Model);
                 IsNewInstance = false;
             }
 
-            await Ctx.SaveChangesAsync();
-            NavigationManager.NavigateTo($"/admin/{SetName}", false);
+            await _ctx.SaveChangesAsync();
+            _nMgr.NavigateTo($"/{_adminService.Endpoint}/{SetName}", false);
         }
         private async Task DeleteAsync()
         {
             if (!IsNewInstance)
             {
-                Ctx.Remove(Model);
-                await Ctx.SaveChangesAsync();
-                NavigationManager.NavigateTo($"/admin/{SetName}", true);
+                _ctx.Remove(Model);
+                await _ctx.SaveChangesAsync();
+                _nMgr.NavigateTo($"/{_adminService.Endpoint}/{SetName}", true);
             }
         }
         private void OnCancelClick(MouseEventArgs e)
         {
-            NavigationManager.NavigateTo($"/admin/{SetName}", true);
+            _nMgr.NavigateTo($"/{_adminService.Endpoint}/{SetName}", true);
         }
         private void OnDeleteClick(MouseEventArgs e)
         {

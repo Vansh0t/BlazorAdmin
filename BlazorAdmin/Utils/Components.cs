@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Components;
-using System.Reflection;
 
 namespace BlazorAdmin.Utils
 {
@@ -15,7 +14,6 @@ namespace BlazorAdmin.Utils
             builder.OpenComponent(1, type);
             builder.CloseComponent();
         };
-        //Error=@Error Props=@props SubSets=@subSets SetName=@SetName IsNewInstance=@isNewInstance
         internal static RenderFragment RenderCustomForm(Type type, bool isNewInstance, string error
             ) => builder =>
         {
