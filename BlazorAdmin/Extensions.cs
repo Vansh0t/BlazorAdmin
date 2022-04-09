@@ -112,11 +112,11 @@ namespace BlazorAdmin
         /// <param name="roles"></param>
         /// <returns></returns>
         /// <exception cref="FormatException"></exception>
-        public static IServiceCollection AddBlazorAdmin(this IServiceCollection services, string adminEndpoint, string roles = "Admin")
+        public static IServiceCollection AddBlazorAdmin(this IServiceCollection services, string roles = "Admin")
         {
-            if (adminEndpoint.Contains('/'))
-                throw new FormatException("Due to Blazor's @page limitations admin endpoint cannot contain route delimiters '/'. It must be a single word like 'admin'");
-            var adminService = new Services.BlazorAdminService(adminEndpoint, roles);
+            //if (adminEndpoint.Contains('/'))
+            //    throw new FormatException("Due to Blazor's @page limitations admin endpoint cannot contain route delimiters '/'. It must be a single word like 'admin'");
+            var adminService = new Services.BlazorAdminService(roles);
             services.AddSingleton(adminService);
             return services;
         }

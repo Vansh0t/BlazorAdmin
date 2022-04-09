@@ -1,9 +1,15 @@
 ﻿using Microsoft.AspNetCore.Components.Forms;
+using Microsoft.AspNetCore.Components;
 namespace BlazorAdmin.Components
 {
     using Utils;
-    partial class GenericInput:GenericInputBase
+    partial class GenericInput:InputBase
     {
+        [Parameter]
+        public virtual string Class { get; set; }
+        [Parameter]
+        public virtual List<object> EntitySet { get; set; }
+
         private const int MAX_FILE_SIZE = 10485760; //~10mb 
         private readonly Dictionary<Type, Dictionary<string, object>> InputMap = new()
         {

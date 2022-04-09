@@ -1,0 +1,43 @@
+﻿@using System.Reflection;
+@using Microsoft.AspNetCore.Hosting;
+@inject IWebHostEnvironment _env;
+@inject NavigationManager _nav;
+@inherits BlazorAdmin.Components.InputBase;
+
+@if(photo is not null)
+{
+    <InputFile OnChange="@OnFileUploaded"/>
+    <p>@Error</p>
+    <img src = "@url" />
+}
+
+
+@code {
+    private Data.Photo photo;
+    private string url;
+    private const int MAX_SIZE = 10485760; //~10mb
+    private async Task OnFileUploaded(InputFileChangeEventArgs e)
+    {
+        Error = "";
+        if(e.File.Size>MAX_SIZE) {
+            Error = "File is too big";
+            return;
+        }
+        string fileName = $"{Guid.NewGuid()}-{e.File.Name}";
+        string path = Path.Join(_env.WebRootPath, "media/"+fileName);
+        using (FileStream fs = new(path, FileMode.OpenOrCreate))
+        {
+            
+            await e.File.OpenReadStream(MAX_SIZE).CopyToAsync(fs);
+            Data.Image image = new(path, Path.Join(_nav.BaseUri, "media/"+fileName));
+            photo.Image = image;
+            url = image.Url;
+        }
+    }
+    protected override void OnInitialized()
+    {
+        photo = this.Model.Model as Data.Photo;
+        url = photo.Image?.Url;
+    }
+   
+}

@@ -29,7 +29,7 @@ namespace BlazorAdmin.Components
             }
 
             await _ctx.SaveChangesAsync();
-            _nMgr.NavigateTo($"/{_adminService.Endpoint}/{SetName}", false);
+            _nMgr.NavigateTo($"/blazoradmin/{SetName}", false);
         }
         private async Task DeleteAsync()
         {
@@ -37,12 +37,12 @@ namespace BlazorAdmin.Components
             {
                 _ctx.Remove(Model);
                 await _ctx.SaveChangesAsync();
-                _nMgr.NavigateTo($"/{_adminService.Endpoint}/{SetName}", true);
+                _nMgr.NavigateTo($"/blazoradmin/{SetName}", true);
             }
         }
         private void OnCancelClick(MouseEventArgs e)
         {
-            _nMgr.NavigateTo($"/{_adminService.Endpoint}/{SetName}", true);
+            _nMgr.NavigateTo($"/blazoradmin/{SetName}", true);
         }
         private void OnDeleteClick(MouseEventArgs e)
         {

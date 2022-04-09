@@ -1,6 +1,8 @@
-﻿@page "/{EndpointBase}/{SetName}"
+﻿@page "/blazoradmin/{SetName}"
 @attribute [AdminAuthorize]
 @using BlazorAdmin.Components;
+
+
 <ConfirmPopup 
     Message = "Permanently delete the entity from database?"
     OnConfirm="(async (e)=> await DeleteAsync())"
@@ -10,7 +12,7 @@
     />
 <div class="d-flex align-content-center">
     <h4>@SetName</h4>
-<NavLink class="ms-3" href=@($"/{EndpointBase}/{SetName}/new")>
+<NavLink class="ms-3" href=@($"/blazoradmin/{SetName}/new")>
      <button class="admin-btn-size border-0 rounded bg-primary text-light d-flex justify-content-evenly align-content-center"><span class="oi oi-plus top-0 my-auto"/>New</button>
 </NavLink>
 </div>
@@ -18,7 +20,7 @@
 
 <p>@Error</p>
 
-<table class="table">
+<table class="blazoradmin-table">
     <thead>
 
         <tr>
@@ -41,7 +43,7 @@
     </thead>
     <tbody>
 @foreach (var r in rows) {
-    string link = $"/{EndpointBase}/{SetName}/{r.pkeyValue}";
+    string link = $"/blazoradmin/{SetName}/{r.pkeyValue}";
      <tr>
     @foreach(var kvp in r.data) {
             var prop = modelProps.FirstOrDefault(_=>_.name==kvp.Key);

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
+using Microsoft.JSInterop;
 using Microsoft.EntityFrameworkCore;
 using BlazorAdmin.Utils;
 
@@ -8,13 +9,29 @@ namespace BlazorAdmin.Pages
     {
         [Inject]
         protected DbContext _ctx { get; set; }
+        [Inject]
+        protected IJSRuntime _js { get; set; }
         internal List<Database.Set> sets;
-        [Parameter]
-        public string EndpointBase { get { return _adminService.Endpoint; } set { } }
+        //[Parameter]
+        //public string EndpointBase { get { return _adminService.Endpoint; } set { } }
 
         protected async override Task OnInitializedAsync()
         {
             sets = await Database.CountSetsAsync(_ctx);
+        }
+        protected async override Task OnAfterRenderAsync(bool firstRender)
+        {
+
+            if(!firstRender)
+                try
+                {
+                    await _js.InvokeVoidAsync("setTableSortable");
+                }
+                catch
+                {
+
+                }
+                
         }
     }
 }

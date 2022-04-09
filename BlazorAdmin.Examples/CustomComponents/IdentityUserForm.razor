@@ -1,0 +1,281 @@
+﻿@using BlazorAdmin.Annotations;
+@using Data;
+@using Microsoft.AspNetCore.Identity;
+@using Microsoft.EntityFrameworkCore;
+@inject UserManager<AppUser> _uMgr;
+@inject ApplicationDbContext _ctx;
+@inject NavigationManager _nMgr;
+@inject RoleManager<AppRole> _rMgr;
+@inherits BlazorAdmin.Components.FormBase;
+@if(EditModel is not null && isInitDone){
+    <BlazorAdmin.Components.ConfirmPopup 
+    Message = "Permanently delete entity from database?"
+    OnConfirm="(async (e)=> await DeleteAsync())"
+    ConfirmButtonClass="admin-btn-size model-edit-form-submit border-0 rounded bg-danger text-light"
+    ConfirmButtonText = "Delete"
+    IsShown=@showDeleteConfirm
+    />
+    string title = Model.GetType().Name;
+    if(IsNewInstance)
+    {
+        title = title.Insert(0, "New ");
+    }
+    <h3>@title</h3>
+    <div>
+        <EditForm class="model-edit-form" Model=@EditModel OnValidSubmit="@HandleValidAsync">
+        <DataAnnotationsValidator/>
+        <label for="email">Email</label>
+        <InputText id="email" @bind-Value="EditModel.Email"/>
+        <label for="emailConfirmed">Email Confirmed</label>
+        <InputCheckbox id="emailConfirmed" @bind-Value="EditModel.EmailConfirmed"/>
+        <label for="username">Username</label>
+        <InputText id="username" @bind-Value="EditModel.Username"/>
+        <label for="password">Password</label>
+        <InputText type="password" id="password" @bind-Value="EditModel.Password"/>
+        <label for="passwordConfirm">Password Confirmation</label>
+        <InputText type="password" id="passwordConfirm" @bind-Value="EditModel.PasswordConfirm"/>
+        <label for="phone">Phone</label>
+        <InputText type="tel" id="phone" @bind-Value="EditModel.Phone"/>
+        <label for="phoneConfirmed">Phone Confirmed</label>
+        <InputCheckbox  id="phoneConfirmed" @bind-Value="EditModel.PhoneConfirmed"/>
+        <label for="twoFactorEnabled">Two Factor Enabled</label>
+        <InputCheckbox  id="twoFactorEnabled" @bind-Value="EditModel.TwoFactorEnabled"/>
+        <label for="lockoutEnabled">Lockout Enabled</label>
+        <InputCheckbox id="lockoutEnabled" @bind-Value="EditModel.LockoutEnabled"/>
+        <label for="lockoutEnd">Lockout End</label>
+        <InputDate id="lockoutEnd" @bind-Value="EditModel.LockoutEnd"/>
+        <label for="roles">Roles</label>
+        <InputSelect id="roles" @bind-Value="EditModel.Roles">
+                @foreach(var r in appRoles)
+                {
+                    <option value=@r>@r</option>
+                }
+         </InputSelect>
+        <div class="d-inline-flex justify-content-around">
+            <input type = "submit" class="admin-btn-size model-edit-form-submit border-0 rounded bg-primary text-light", value="Save"/>
+            @if(!IsNewInstance)
+            {
+                <input type = "button" class="admin-btn-size model-edit-form-submit border-0 rounded bg-danger text-light" value="Delete" @onclick="OnDeleteClick"/>
+            }
+            <input type = "button" class="admin-btn-size model-edit-form-submit border-0 rounded bg-warning text-light" value="Cancel" @onclick="OnCancelClick"/>
+        </div>     
+        </EditForm>
+        <p>@Error</p>
+    </div>
+}
+
+@code {
+
+
+    public class EditableUserModel
+    {
+        public string Email { get; set; }
+        public bool EmailConfirmed { get; set; }
+        public string Username { get; set; }
+        public string Password { get; set; }
+        public string PasswordConfirm { get; set; }
+        public string Phone { get; set; }
+        public bool PhoneConfirmed { get; set; }
+        public bool TwoFactorEnabled { get; set; }
+        public bool LockoutEnabled { get; set; }
+        public DateTimeOffset? LockoutEnd { get; set; }
+        public string[] Roles { get; set; }
+        public EditableUserModel(AppUser user, string[] roles)
+        {
+            Email = user.Email;
+            EmailConfirmed = user.EmailConfirmed;
+            Username = user.UserName;
+            Phone = user.PhoneNumber;
+            PhoneConfirmed = user.PhoneNumberConfirmed;
+            TwoFactorEnabled = user.TwoFactorEnabled;
+            LockoutEnabled = user.LockoutEnabled;
+            LockoutEnd = user.LockoutEnd;
+            Roles = roles;
+        }
+    }
+
+    public AppUser AppUserModel { get; set; }
+
+    public EditableUserModel EditModel { get; set; }
+
+    private string[] appRoles;
+
+    private string[] prevUserRoles;
+
+    private bool showDeleteConfirm;
+
+    private bool isInitDone;
+
+    protected async override Task OnInitializedAsync()
+    {
+        AppUserModel = Model as AppUser;
+        prevUserRoles = (await _uMgr.GetRolesAsync(AppUserModel)).ToArray();
+        string[] arrCopy = new string[prevUserRoles.Length];
+        prevUserRoles.CopyTo(arrCopy, 0);
+        EditModel = new EditableUserModel(AppUserModel, arrCopy);
+        appRoles = await _rMgr.Roles.Select(_=>_.Name).ToArrayAsync();
+        isInitDone = true;
+    }
+    private void OnDeleteClick(MouseEventArgs e)
+    {
+        showDeleteConfirm = true;
+    }
+    private void OnCancelClick(MouseEventArgs e)
+    {
+        _nMgr.NavigateTo($"/blazoradmin/Users", true);
+    }
+    private async Task DeleteAsync()
+    {
+        await _uMgr.DeleteAsync(AppUserModel);
+        _nMgr.NavigateTo($"/blazoradmin/Users", true);
+    }
+    private async Task HandleValidAsync(EditContext editContext)
+    {
+
+
+        if(IsNewInstance)
+        {
+            AppUserModel = new AppUser
+            {
+                UserName = EditModel.Username,
+                Email = EditModel.Email,
+                EmailConfirmed = EditModel.EmailConfirmed,
+                PhoneNumber = EditModel.Phone,
+                PhoneNumberConfirmed = EditModel.PhoneConfirmed,
+                TwoFactorEnabled = EditModel.TwoFactorEnabled,
+                LockoutEnabled = EditModel.LockoutEnabled,
+                LockoutEnd = EditModel.LockoutEnd
+            };
+            var result = await _uMgr.CreateAsync(AppUserModel);
+            if(!result.Succeeded)
+            {
+                ShowErrors(result.Errors);
+                return;
+            }
+
+        }
+        else
+        {
+            //Default IdentityUser supports modification of some properties only via UserManager
+            //Avoid unnecessary db requests by checking if data has changed
+            if(EditModel.Username != AppUserModel.UserName)
+            {
+                var result = await _uMgr.SetUserNameAsync(AppUserModel, EditModel.Username);
+
+                if (!result.Succeeded)
+                {
+                    ShowErrors(result.Errors);
+                    return;
+                }
+            }
+            if (AppUserModel.Email != EditModel.Email)
+            {
+                var result = await _uMgr.SetEmailAsync(AppUserModel, EditModel.Email);
+                if (!result.Succeeded)
+                {
+                    ShowErrors(result.Errors);
+                    return;
+                }
+            }
+            if(EditModel.EmailConfirmed != AppUserModel.EmailConfirmed)
+            {
+                //There is no way to remove EmailConfirmed status via UserManager, so only care if it is true
+                if(EditModel.EmailConfirmed)
+                {
+                    var token = await _uMgr.GenerateEmailConfirmationTokenAsync(AppUserModel);
+                    var result = await _uMgr.ConfirmEmailAsync(AppUserModel, token);
+                    if(!result.Succeeded)
+                    {
+                        ShowErrors(result.Errors);
+                        return;
+                    }
+                }
+            }
+            if (EditModel.Password != null && EditModel.Password != "")
+            {
+                if(EditModel.Password == EditModel.PasswordConfirm)
+                {
+
+                    var token = await _uMgr.GeneratePasswordResetTokenAsync(AppUserModel);
+                    var result = await _uMgr.ResetPasswordAsync(AppUserModel, token, EditModel.Password);
+                    if (!result.Succeeded)
+                    {
+                        ShowErrors(result.Errors);
+                        return;
+                    }
+                }
+                else
+                {
+                    Error = "Passwords don't match.";
+                    return;
+                }
+            }
+
+            if(EditModel.Phone != AppUserModel.PhoneNumber)
+            {
+                var result = await _uMgr.SetPhoneNumberAsync(AppUserModel, EditModel.Phone);
+                if (!result.Succeeded)
+                {
+                    ShowErrors(result.Errors);
+                    return;
+                }
+            }
+            //if directly accessible properties were modified, use normal database save
+            if(EditModel.PhoneConfirmed != AppUserModel.PhoneNumberConfirmed||
+                EditModel.TwoFactorEnabled != AppUserModel.TwoFactorEnabled ||
+                EditModel.LockoutEnabled != AppUserModel.LockoutEnabled || 
+                EditModel.LockoutEnd != AppUserModel.LockoutEnd)
+            {
+                AppUserModel.PhoneNumberConfirmed = EditModel.PhoneConfirmed;
+                AppUserModel.TwoFactorEnabled = EditModel.TwoFactorEnabled;
+                AppUserModel.LockoutEnabled = EditModel.LockoutEnabled;
+                //Remove offset for npgsql
+                //Needs testing with other providers
+                if (EditModel.LockoutEnd is not null)
+                {
+                    DateTimeOffset dto = (DateTimeOffset)EditModel.LockoutEnd;
+                    AppUserModel.LockoutEnd = dto.ToOffset(TimeSpan.Zero);
+                }
+                else
+                    AppUserModel.LockoutEnd = null;
+                await _ctx.SaveChangesAsync();
+            }
+            (var removed, var added) = FindRoleDiffs(prevUserRoles, EditModel.Roles);
+            if(removed.Count>0)
+            {
+                await _uMgr.RemoveFromRolesAsync(AppUserModel, removed);
+            }
+            if(added.Count>0)
+            {
+                await _uMgr.AddToRolesAsync(AppUserModel, added);
+            }
+        }
+        //Return to entity list
+        _nMgr.NavigateTo($"/blazoradmin/Users", true);
+    }
+    private void ShowErrors(IEnumerable<IdentityError> errors)
+    {
+        Error = string.Join(' ', errors.Select(_=>_.Description));
+    }
+    private (List<string>removed, List<string>added) FindRoleDiffs(string[] beforeRoles, string[] afterRoles)
+    {
+        (List<string> removed, List<string> added) = (new(), new());
+        foreach(var r in afterRoles)
+        {
+            if(!beforeRoles.Contains(r))
+            {
+                added.Add(r);
+            }
+        }
+        foreach(var r in beforeRoles)
+        {
+            if(!afterRoles.Contains(r))
+            {
+                removed.Add(r);
+            }
+        }
+        return (removed, added);
+    }
+}
+
+

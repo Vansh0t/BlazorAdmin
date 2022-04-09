@@ -28,8 +28,8 @@ namespace BlazorAdmin.Pages
         //Make sure model init is completed so we don't run into DbContext concurrency issues
         private bool isModelInitialized;
 
-        [Parameter]
-        public string EndpointBase { get { return _adminService.Endpoint; } set { } }
+        //[Parameter]
+        //public string EndpointBase { get { return _adminService.Endpoint; } set { } }
         public class InputMap
         {
             public Type inputType;

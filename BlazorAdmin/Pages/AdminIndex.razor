@@ -1,6 +1,6 @@
-﻿@page "/{EndpointBase}"
+﻿@page "/blazoradmin"
 @attribute [AdminAuthorize]
-<table class="table">
+<table class="blazoradmin-table">
     <thead>
         <tr>
             <th>
@@ -16,7 +16,7 @@
 @if(sets is not null)
         {
             @foreach (var s in sets) {
-     string nav = $"{EndpointBase}/{s.name}";
+     string nav = $"blazoradmin/{s.name}";
         <tr>
             <td>
                 <NavLink href=@nav>

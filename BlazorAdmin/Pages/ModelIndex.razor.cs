@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.JSInterop;
 namespace BlazorAdmin.Pages
 {
     using Utils;
@@ -8,10 +9,12 @@ namespace BlazorAdmin.Pages
     {
         [Inject]
         protected DbContext _ctx { get; set; }
+        [Inject]
+        protected IJSRuntime _js { get; set; }
         [Parameter]
         public string SetName { get; set; }
-        [Parameter]
-        public string EndpointBase { get { return _adminService.Endpoint; } set { } }
+        //[Parameter]
+        //public string EndpointBase { get { return _adminService.Endpoint; } set { } }
 
         public Type modelType;
         public List<ModelProperty> modelProps = new();
@@ -50,6 +53,18 @@ namespace BlazorAdmin.Pages
         protected async override Task OnInitializedAsync()
         {
             await InitDbDataAsync(SetName, _ctx);
+        }
+        protected async override Task OnAfterRenderAsync(bool firstRender)
+        {
+            if (!firstRender)
+                try
+                {
+                    await _js.InvokeVoidAsync("setTableSortable");
+                }
+                catch
+                {
+
+                }
         }
         public async Task InitDbDataAsync(string setName, DbContext ctx)
         {

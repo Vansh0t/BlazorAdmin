@@ -25,7 +25,7 @@
                         AdminInput customInput = p.GetCustomAttributes(typeof(AdminInput), false).FirstOrDefault() as AdminInput;
                         if(customInput is not null)
                         {
-                            if(customInput.componentType.IsSubclassOf(typeof(GenericInputBase)))
+                            if(customInput.componentType.IsSubclassOf(typeof(InputBase)))
                             {
                                 @Components.RenderSimple(customInput.componentType);
                             }
