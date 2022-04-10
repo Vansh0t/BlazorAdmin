@@ -4,11 +4,11 @@
 BlazorAdmin is an RCL (Razor Class Library) with pages and components for database create, read, update, delete operations. The main goal of the project is to support CRUD operations for generic models. This means a user doesn't have to use CRUD scaffolding or manually process each individual model, but instead can simple add one attribute ``[AdminVisible]`` to a model and be able to execute all CRUD operations.
 ## Setup
 1. Add nuget to the project.
-2. Add BlazorAdmin service. The first parameter defines endpoint for admin services, the second one defines comma delimited roles that user should have to be authorized. Defaults to Admin.
+2. Add BlazorAdmin service. AddBlazorAdmin method accepts single string parameter of comma delimited user roles. Only user with the roles provided will be able to access 'blazoradmin' endpoint. Defaults to Admin.
 ```C#
 using BlazorAdmin;
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddBlazorAdmin("admin", "Admin");
+builder.Services.AddBlazorAdmin("Admin,Superuser");
 ```
 3. Add BlazorAdmin assembly to the app router's AdditionalAssemblies.
 ```C#
@@ -25,9 +25,9 @@ using BlazorAdmin.Annotations;
         public string Name { get; set; } = "New Event";
     }
 ```
-5. Add NavLink somewhere in your app, pointing to endpoint you've set in step 2.
+5. Add NavLink somewhere in your app, pointing to blazoradmin endpoint.
 ```C#
-<NavLink class="nav-link" href="admin">Admin</NavLink>
+<NavLink class="nav-link" href="blazoradmin">Admin</NavLink>
 ```
 6. Optionally add Tablesorter and JQueryUI plugins and css to _Layout.cshtml <head> section to enable sorting and filtering.
 ```html
