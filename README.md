@@ -3,10 +3,13 @@
 
 BlazorAdmin is an RCL (Razor Class Library) with pages and components for database create, read, update, delete operations. The main goal of the project is to support CRUD operations for generic models, to remove necessity of using CRUD scaffolding or manual processing of each individual model. BlazorAdmin takes a model and tries to find corresponding input for each of its properties. BlazorAdmin will index and display each model with ``[AdminVisible]`` attribute applied to the model class and one of its properties.
 
-BlazorAdmin is designed to use with Blazor Server. Security and support for Blazor WebAssembly are not guaranteed.
+Tested with PostgreSQL (npgsql) and SQLite.
+
+**BlazorAdmin is designed to use with Blazor Server. Security and support for Blazor WebAssembly are not guaranteed.**
+
 
 ## Features
-1. Easy UI forms for CRUD operations on generic models.
+1. Web UI forms for CRUD operations on generic models.
 2. Authorization using built-in .NET authorization flow.
 3. Customization support for forms and inputs.
 4. Sorting and search support thanks to [Tablesorter](https://github.com/Mottie/tablesorter).
