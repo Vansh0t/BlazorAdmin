@@ -12,12 +12,14 @@ namespace BlazorAdmin.Pages
         [Inject]
         protected IJSRuntime _js { get; set; }
         internal List<Database.Set> sets;
+        private bool isInitDone;
         //[Parameter]
         //public string EndpointBase { get { return _adminService.Endpoint; } set { } }
 
         protected async override Task OnInitializedAsync()
         {
             sets = await Database.CountSetsAsync(_ctx);
+            isInitDone = true;
         }
         protected async override Task OnAfterRenderAsync(bool firstRender)
         {
