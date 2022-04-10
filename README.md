@@ -1,7 +1,14 @@
 # BlazorAdmin
 <img style="width:40%; height:40%;" src="https://user-images.githubusercontent.com/35566242/162442880-f064506c-7300-4334-8874-3f9645694825.png" />
 
-BlazorAdmin is an RCL (Razor Class Library) with pages and components for database create, read, update, delete operations. The main goal of the project is to support CRUD operations for generic models. This means a user doesn't have to use CRUD scaffolding or manually process each individual model, but instead can simple add one attribute ``[AdminVisible]`` to a model and be able to execute all CRUD operations.
+BlazorAdmin is an RCL (Razor Class Library) with pages and components for database create, read, update, delete operations. The main goal of the project is to support CRUD operations for generic models, to remove necessity of using CRUD scaffolding or manual processing of each individual model. BlazorAdmin takes a model and tries to find corresponding input for each of its properties. BlazorAdmin will index and display each model with ``[AdminVisible]`` attribute applied to the model class and one of its properties.
+
+## Features
+1. Easy UI forms for CRUD operations on generic models.
+2. Authorization using built-in .NET authorization flow.
+3. Customization support for forms and inputs.
+4. Sorting and search support thanks to [Tablesorter](https://github.com/Mottie/tablesorter).
+
 ## Setup
 1. Add nuget to the project.
 2. Add BlazorAdmin service. AddBlazorAdmin method accepts single string parameter of comma delimited user roles. Only user with the roles provided will be able to access 'blazoradmin' endpoint. Defaults to Admin.
@@ -14,7 +21,7 @@ builder.Services.AddBlazorAdmin("Admin,Superuser");
 ```C#
 <Router AppAssembly="@typeof(App).Assembly" AdditionalAssemblies = "new [] {typeof(BlazorAdmin.Pages.AdminIndex).Assembly}">
 ```
-4. Apply ``[AdminVisible]`` attribute to a model class and at least one of its properties. Properties marked with the attribute will be visible on the entities list as column.
+4. Apply ``[AdminVisible]`` attribute to a model class and at least one of its properties. Properties marked with this attribute will be visible on the entity list as column.
 ```C#
 using BlazorAdmin.Annotations;
     [AdminVisible]
@@ -25,11 +32,11 @@ using BlazorAdmin.Annotations;
         public string Name { get; set; } = "New Event";
     }
 ```
-5. Add NavLink somewhere in your app, pointing to blazoradmin endpoint.
+5. Add NavLink somewhere in your app pointing to blazoradmin endpoint.
 ```C#
 <NavLink class="nav-link" href="blazoradmin">Admin</NavLink>
 ```
-6. Optionally add Tablesorter and JQueryUI plugins and css to _Layout.cshtml <head> section to enable sorting and filtering.
+6. Optionally add [Tablesorter](https://github.com/Mottie/tablesorter) and [JQueryUI](https://jqueryui.com) plugins and their css to _Layout.cshtml <head> section in order to enable sorting and searching.
 ```html
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.31.3/css/theme.jui.min.css" integrity="sha512-P8bbeO94Om6NRt8zty7v54b1LuwclWVqrufWMaZm/s+Bc+y8/fCL5iRk/yXtmZKA6FmB8G2ehSgVZXgPyJO1jQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/themes/cupertino/jquery-ui.min.css" integrity="sha512-ug/p2fTnYRx/TfVgL8ejTWolaq93X+48/FLS9fKf7AiazbxHkSEENdzWkOxbjJO/X1grUPt9ERfBt21iLh2dxg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
