@@ -1,4 +1,30 @@
-﻿#container {
+﻿.tablesorter-filter-row.hideme {
+    height:10px;
+}
+
+#blazoradmin-spinner {
+    border: 16px solid silver;
+    border-top: 16px solid #337AB7;
+    border-radius: 50%;
+    width: 80px;
+    height: 80px;
+    animation: spin 700ms linear infinite;
+    top: 40%;
+    left: 55%;
+    position: absolute;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg)
+    }
+
+    100% {
+        transform: rotate(360deg)
+    }
+}
+
+#container {
     display: flex;
     flex-direction: row;
     flex: 1;

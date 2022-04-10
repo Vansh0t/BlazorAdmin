@@ -27,6 +27,7 @@ namespace BlazorAdmin.Pages
         public bool ShowDeleteConfirm { get; set; }
         //public List<object> models = new();
         private object targetEntity;
+        private bool isInitDone;
         public class ModelProperty
         {
             public string name;
@@ -53,10 +54,11 @@ namespace BlazorAdmin.Pages
         protected async override Task OnInitializedAsync()
         {
             await InitDbDataAsync(SetName, _ctx);
+            isInitDone = true;
         }
         protected async override Task OnAfterRenderAsync(bool firstRender)
         {
-            if (!firstRender)
+            //if (!firstRender)
                 try
                 {
                     await _js.InvokeVoidAsync("setTableSortable");

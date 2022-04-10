@@ -19,22 +19,21 @@
 
 
 <p>@Error</p>
-
-<table class="blazoradmin-table">
+@if(isInitDone) {
+<table style="table-layout:fixed" class="table blazoradmin-table">
     <thead>
 
         <tr>
+
 @foreach (var p in modelProps) {
                 if(p.isVisible)
                 {
                     <th id="@p.name">
-                        <p>
                             @(p.displayName is not null?p.displayName:p.name)
-                        </p>
                     </th>
                 }
 }            
-                    <th id="model-index-actions">
+                    <th id="model-index-actions" class="sort-ignore filter-false" width="120">
 
                     </th>
                 
@@ -49,22 +48,22 @@
             var prop = modelProps.FirstOrDefault(_=>_.name==kvp.Key);
 
             @if(prop is not null) {
-                        if(prop.isVisible)
-                        {
-                            if(link is not null)
-                            {
-                                <td headers=@kvp.Key>
-                                    <NavLink href=@link>@kvp.Value</NavLink>
-                                </td>
-                                link = null;
-                            }
-                            else
-                            {
-                                <td headers=@kvp.Key>
-                                    @kvp.Value
-                                </td>
-                            }
-                        }
+                  if(prop.isVisible)
+                  {
+                      if(link is not null)
+                      {
+                          <td style="word-wrap:break-word; max-width:200px;" headers=@kvp.Key>
+                              <NavLink href=@link>@kvp.Value</NavLink>
+                          </td>
+                          link = null;
+                      }
+                      else
+                      {
+                          <td style="word-wrap:break-word; max-width:200px;" headers=@kvp.Key>
+                              @kvp.Value
+                          </td>
+                      }
+                  }
                         
             }
         }
@@ -73,5 +72,10 @@
         </td>
     </tr>
 }
+
     </tbody>
 </table>
+}
+else {
+    <div id="blazoradmin-spinner"></div>
+}

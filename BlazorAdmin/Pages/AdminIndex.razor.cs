@@ -22,7 +22,7 @@ namespace BlazorAdmin.Pages
         protected async override Task OnAfterRenderAsync(bool firstRender)
         {
 
-            if(!firstRender)
+            //if(!firstRender)
                 try
                 {
                     await _js.InvokeVoidAsync("setTableSortable");

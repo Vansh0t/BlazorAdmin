@@ -66,7 +66,9 @@
 
 @code {
 
-
+    /// <summary>
+    /// Many properties of IdentityUser model are not directly accessible, so create temporary model with the same properties
+    /// </summary>
     public class EditableUserModel
     {
         public string Email { get; set; }
@@ -109,6 +111,7 @@
     protected async override Task OnInitializedAsync()
     {
         AppUserModel = Model as AppUser;
+        //Get roles and create temporary user model
         prevUserRoles = (await _uMgr.GetRolesAsync(AppUserModel)).ToArray();
         string[] arrCopy = new string[prevUserRoles.Length];
         prevUserRoles.CopyTo(arrCopy, 0);
@@ -131,8 +134,7 @@
     }
     private async Task HandleValidAsync(EditContext editContext)
     {
-
-
+        //IsNewInstance tells if model instance should be created and added to database
         if(IsNewInstance)
         {
             AppUserModel = new AppUser

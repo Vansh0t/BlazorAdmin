@@ -41,10 +41,6 @@ using (var serviceScope = app.Services.CreateScope())
         var r2 = uMgr.CreateAsync(user, "Pwd_111").Result;
     }
     var r3 = uMgr.AddToRoleAsync(user, "Admin").Result;
-    Console.WriteLine("TT " + r3.Errors.FirstOrDefault().Description);
-    //uMgr.Dispose();
-    //rMgr.Dispose();
-    //ctx.Dispose();
 }
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

@@ -1,6 +1,6 @@
 ﻿@page "/blazoradmin"
 @attribute [AdminAuthorize]
-<table class="blazoradmin-table">
+<table class="table blazoradmin-table">
     <thead>
         <tr>
             <th>
@@ -9,7 +9,7 @@
             <th>
                 Entities Counts
             </th>
-            <th></th>
+            <th class="sort-ignore filter-false" width="120"></th>
         </tr>
     </thead>
     <tbody>
@@ -29,7 +29,7 @@
             </td>
             <td >
                 <div class = "admin-btn-size">
-                    <NavLink  href=@(nav+"/new")>
+                    <NavLink class="text-decoration-none"  href=@(nav+"/new")>
                         <button  class="border-0 rounded bg-primary text-light d-flex justify-content-evenly align-content-center w-100"><span class="oi oi-plus top-0 my-auto"/>New</button>
                     </NavLink>
                 </div>
@@ -37,6 +37,9 @@
         </tr>
 }
         }
+else {
+    <div id="blazoradmin-spinner"></div>
+}
         
     </tbody>
 </table>

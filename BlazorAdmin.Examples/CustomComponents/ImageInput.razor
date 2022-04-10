@@ -13,29 +13,37 @@
 
 
 @code {
+    //Custom File input that accepts image and displays it
+
     private Data.Photo photo;
     private string url;
     private const int MAX_SIZE = 10485760; //~10mb
     private async Task OnFileUploaded(InputFileChangeEventArgs e)
     {
+        //Error is part of InputBase. Use it to diplay errors to users
         Error = "";
+
         if(e.File.Size>MAX_SIZE) {
             Error = "File is too big";
             return;
         }
+        //Generate filename and resolve path
         string fileName = $"{Guid.NewGuid()}-{e.File.Name}";
         string path = Path.Join(_env.WebRootPath, "media/"+fileName);
+
         using (FileStream fs = new(path, FileMode.OpenOrCreate))
         {
-            
             await e.File.OpenReadStream(MAX_SIZE).CopyToAsync(fs);
+            //Create in database entity that holds info about path and url
             Data.Image image = new(path, Path.Join(_nav.BaseUri, "media/"+fileName));
+            //Set Image property of model. This must be done manually in custom inputs
             photo.Image = image;
             url = image.Url;
         }
     }
     protected override void OnInitialized()
     {
+        //We know type of our model
         photo = this.Model.Model as Data.Photo;
         url = photo.Image?.Url;
     }
