@@ -1,11 +1,11 @@
 # BlazorAdmin
 <img style="width:40%; height:40%;" src="https://user-images.githubusercontent.com/35566242/162442880-f064506c-7300-4334-8874-3f9645694825.png" />
 
-BlazorAdmin is an RCL (Razor Class Library) with pages and components for database create, read, update, delete operations. The main goal of the project is to support CRUD operations for generic models, to remove necessity of using CRUD scaffolding or manual processing of each individual model. BlazorAdmin takes a model and tries to find corresponding input for each of its properties. BlazorAdmin will index and display each model with ``[AdminVisible]`` attribute applied to the model class and one of its properties.
+BlazorAdmin is an RCL (Razor Class Library) with pages and components for database create, read, update, delete operations. The main goal of the project is to support CRUD operations for generic models, to remove the necessity of using CRUD scaffolding or manual processing of each individual model. BlazorAdmin takes a model and tries to find corresponding input for each of its properties. BlazorAdmin will index and display each model with ``[AdminVisible]`` attribute applied to the model class and one of its properties.
 
 Tested with PostgreSQL (npgsql) and SQLite.
 
-**BlazorAdmin is designed to use with Blazor Server. Security and support for Blazor WebAssembly are not guaranteed.**
+**BlazorAdmin is designed to be used with Blazor Server. Security and support for Blazor WebAssembly are not guaranteed.**
 
 
 ## Features
@@ -16,7 +16,7 @@ Tested with PostgreSQL (npgsql) and SQLite.
 
 ## Setup
 1. Add nuget to the project.
-2. Add BlazorAdmin service. AddBlazorAdmin method accepts single string parameter of comma delimited user roles. Only user with the roles provided will be able to access 'blazoradmin' endpoint. Defaults to Admin.
+2. Add BlazorAdmin service. AddBlazorAdmin method accepts single string parameter of comma delimited user roles. Only users with the roles provided will be able to access 'blazoradmin' endpoint. Defaults to Admin.
 ```C#
 using BlazorAdmin;
 var builder = WebApplication.CreateBuilder(args);
@@ -26,7 +26,7 @@ builder.Services.AddBlazorAdmin("Admin,Superuser");
 ```C#
 <Router AppAssembly="@typeof(App).Assembly" AdditionalAssemblies = "new [] {typeof(BlazorAdmin.Pages.AdminIndex).Assembly}">
 ```
-4. Apply ``[AdminVisible]`` attribute to a model class and at least one of its properties. Properties marked with this attribute will be visible on the entity list as column.
+4. Apply ``[AdminVisible]`` attribute to a model class and at least one of its properties. Properties marked with this attribute will be displayed on the entity list as a column.
 ```C#
 using BlazorAdmin.Annotations;
     [AdminVisible]
@@ -41,7 +41,7 @@ using BlazorAdmin.Annotations;
 ```C#
 <NavLink class="nav-link" href="blazoradmin">Admin</NavLink>
 ```
-6. Optionally add [Tablesorter](https://github.com/Mottie/tablesorter) and [JQueryUI](https://jqueryui.com) plugins and their css to _Layout.cshtml <head> section in order to enable sorting and searching.
+6. Optionally add [Tablesorter](https://github.com/Mottie/tablesorter) and [JQueryUI](https://jqueryui.com) plugins and their css to the _Layout.cshtml <head> section in order to enable sorting and searching.
 ```html
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.31.3/css/theme.jui.min.css" integrity="sha512-P8bbeO94Om6NRt8zty7v54b1LuwclWVqrufWMaZm/s+Bc+y8/fCL5iRk/yXtmZKA6FmB8G2ehSgVZXgPyJO1jQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/themes/cupertino/jquery-ui.min.css" integrity="sha512-ug/p2fTnYRx/TfVgL8ejTWolaq93X+48/FLS9fKf7AiazbxHkSEENdzWkOxbjJO/X1grUPt9ERfBt21iLh2dxg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -69,10 +69,10 @@ using BlazorAdmin.Annotations;
     </script>    
 ```
 ## Authorization
-BlazorAdmin uses built-in .NET ``[Authorize]`` attribute with roles defined during Setup to authorize users.
+BlazorAdmin uses the built-in .NET ``[Authorize]`` attribute with roles defined during Setup to authorize users.
 ## Customization
-Sometimes you can't rely on BlazorAdmin generic inputs or forms. For example, to edit ``IdentityUser`` or ``IdentityRole`` entities you must use ``UserManager`` and ``RoleManager``. To do this you can use custom inputs and forms. Individual input fields or entire forms can be overriden with custom blazor components.
+Sometimes you can't rely on BlazorAdmin generic inputs or forms. For example, to edit ``IdentityUser`` or ``IdentityRole`` entities, you must use ``UserManager`` and ``RoleManager``. To do this, you can use custom inputs and forms. Individual input fields or entire forms can be overridden with custom blazor components.
 ### Custom Input
-Your custom input component must derive from ``BlazorAdmin.Components.InputBase``. Model to edit will be passed to it as CascadingParameter. Apply ``[AdminInput(typeof(MyCustomInput))]`` to a property of a model class to use ``MyCustomInput`` as input for a model property. See [example](https://github.com/Vansh0t/BlazorAdmin/blob/master/BlazorAdmin.Examples/CustomComponents/ImageInput.razor).
+Your custom input component must derive from ``BlazorAdmin.Components.InputBase``. The Model to edit will be passed to it as CascadingParameter. Apply ``[AdminInput(typeof(MyCustomInput))]`` to a property of a model class to use ``MyCustomInput`` as input for a model property. See [example](https://github.com/Vansh0t/BlazorAdmin/blob/master/BlazorAdmin.Examples/CustomComponents/ImageInput.razor).
 ### Custom Form
-Your custom form component must derive from ``BlazorAdmin.Components.FormBase``. Model to edit will be passed to it as CascadingParameter. Apply ``[AdminForm(typeof(MyCustomForm))]`` to a model class to use ``MyCustomForm`` as edit form for a model. See [example](https://github.com/Vansh0t/BlazorAdmin/blob/master/BlazorAdmin.Examples/CustomComponents/IdentityUserForm.razor).
+Your custom form component must derive from ``BlazorAdmin.Components.FormBase``. The Model to edit will be passed to it as CascadingParameter. Apply ``[AdminForm(typeof(MyCustomForm))]`` to a model class to use ``MyCustomForm`` as an edit form for a model. See [example](https://github.com/Vansh0t/BlazorAdmin/blob/master/BlazorAdmin.Examples/CustomComponents/IdentityUserForm.razor).
